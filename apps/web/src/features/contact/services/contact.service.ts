@@ -1,30 +1,19 @@
 import type { ContactPayload, ContactResponse } from "../types/contact.types";
 
-async function safeJson<T>(res: Response): Promise<T | null> {
-  const contentType = res.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) return null;
-
-  const text = await res.text();
-  if (!text) return null;
-
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    return null;
-  }
-}
-
-export async function sendContact(payload: ContactPayload) {
+export async function sendContact(payload: ContactPayload): Promise<ContactResponse> {
   const res = await fetch("/api/contact", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
-  const data = (await safeJson<ContactResponse>(res)) || ({} as ContactResponse);
+  const text = await res.text();
+
+  // Parse JSON safely and type it
+  const data: ContactResponse = text ? JSON.parse(text) : { success: false };
 
   if (!res.ok) {
-    throw new Error(data?.message || `Request failed (${res.status})`);
+    throw new Error(data.message || `Request failed (${res.status})`);
   }
 
   return data;

@@ -9,7 +9,7 @@ const schema = z.object({
   message: z.string().min(10),
 });
 
-// Always return JSON for preflight requests
+// Handle preflight
 export function OPTIONS() {
   return Response.json({ ok: true }, { status: 200 });
 }
@@ -21,20 +21,19 @@ export async function POST(req: Request) {
 
     if (!parsed.success) {
       return Response.json(
-        { success: false, message: "Invalid payload", issues: parsed.error.flatten() },
+        { success: false, message: "Invalid payload" },
         { status: 400 }
       );
     }
 
-    const resendKey = process.env.RESEND_API_KEY;
-    if (!resendKey) {
+    if (!process.env.RESEND_API_KEY) {
       return Response.json(
-        { success: false, message: "Server not configured (missing RESEND_API_KEY)." },
+        { success: false, message: "Server not configured" },
         { status: 500 }
       );
     }
 
-    const resend = new Resend(resendKey);
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { name, email, message } = parsed.data;
 
     await resend.emails.send({
@@ -52,7 +51,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("CONTACT API ERROR:", err);
     return Response.json(
-      { success: false, message: "Message could not be sent right now. Please try again later." },
+      { success: false, message: "Message could not be sent." },
       { status: 500 }
     );
   }
