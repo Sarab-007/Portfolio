@@ -1,0 +1,19 @@
+{
+  "name": "sarab-portfolio",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n WEB,API -c auto \"npm:dev --workspace apps/web\" \"npm:dev --workspace apps/api\"",
+    "build": "npm run build --workspace apps/web && npm run build --workspace apps/api",
+    "start": "npm run start --workspace apps/web & npm run start --workspace apps/api"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^7.0.4",
+    "concurrently": "^9.0.0"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.12"
+  }
+}
