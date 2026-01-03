@@ -9,6 +9,11 @@ const schema = z.object({
   message: z.string().min(10),
 });
 
+// IMPORTANT: handle preflight
+export function OPTIONS() {
+  return new Response(null, { status: 200 });
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -16,31 +21,38 @@ export async function POST(req: Request) {
 
     if (!parsed.success) {
       return Response.json(
-        { success: false, message: "Invalid payload", issues: parsed.error.flatten() },
+        { success: false, message: "Invalid payload" },
         { status: 400 }
       );
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    if (!process.env.RESEND_API_KEY) {
-      return Response.json({ success: false, message: "Server not configured." }, { status: 500 });
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) {
+      return Response.json(
+        { success: false, message: "Server not configured" },
+        { status: 500 }
+      );
     }
 
+    const resend = new Resend(resendKey);
     const { name, email, message } = parsed.data;
 
     await resend.emails.send({
-      from: "Portfolio <onboarding@resend.dev>", // later you can use your domain
+      from: "Portfolio <onboarding@resend.dev>",
       to: process.env.MAIL_TO || "sarabalikhan98@gmail.com",
       replyTo: email,
       subject: `New message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
     });
 
-    return Response.json({ success: true, message: "Thanks — your message was received." });
+    return Response.json({
+      success: true,
+      message: "Thanks — your message was received.",
+    });
   } catch (err) {
-    console.error(err);
+    console.error("CONTACT API ERROR:", err);
     return Response.json(
-      { success: false, message: "Message could not be sent. Please try again later." },
+      { success: false, message: "Message could not be sent." },
       { status: 500 }
     );
   }
