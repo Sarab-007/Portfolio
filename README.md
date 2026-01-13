@@ -1,11 +1,8 @@
-# Sarab Ali Khan — Portfolio (Next.js + Node API)
-
+# Sarab Ali Khan — Portfolio (Next.js )
 Monorepo:
 - `apps/web` — Next.js (App Router) TypeScript + Tailwind + Framer Motion + next-themes
-- `apps/api` — Node.js (Express) TypeScript backend (contact endpoint)
 
 ## Requirements
-- Node.js 18+ (recommended 20+)
 - npm 9+
 
 ## Setup
@@ -26,7 +23,6 @@ npm run dev
 ```
 
 Web: http://localhost:3000  
-API: http://localhost:4000/health
 
 ## Personalize
 - `apps/web/src/config/site.ts` (links + content)
