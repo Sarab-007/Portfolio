@@ -61,20 +61,6 @@ export const siteConfig = {
 
   experience: [
     {
-      title: "Sr. Full Stack Developer",
-      company: "ProgatiX",
-      location: "Karachi",
-      period: "Jan 2025 — Oct 2025",
-      highlights: [
-        "Lead development teams: code reviews, best practices, mentoring, and quality standards.",
-        "Own system architecture and integrations across front-end and back-end, aligning with business goals.",
-        "Client-facing technical lead: translate requirements into technical solutions with predictable delivery.",
-        "Optimize scalability, performance, and maintainability; proactively remove technical bottlenecks.",
-        "End-to-end ownership of product features from ideation to deployment across cross-functional teams.",
-        "Drive MEAN stack implementations with MongoDB, Express, Angular, and Node.js.",
-      ],
-    },
-    {
       title: "Full Stack Developer",
       company: "Conure Technology Services LLC.",
       location: "Karachi",
