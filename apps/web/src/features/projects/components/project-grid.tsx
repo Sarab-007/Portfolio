@@ -1,15 +1,26 @@
+"use client";
+
 import { projects } from "../data/projects.data";
 import ProjectCard from "./project-card";
-import { Stagger } from "@/src/components/motion/stagger";
+import { motion } from "framer-motion";
+
+const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
 
 export default function ProjectGrid() {
   return (
-    <Stagger>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {projects.map((p) => (
-          <ProjectCard key={p.id} project={p} />
-        ))}
-      </div>
-    </Stagger>
+    <motion.div
+      className="grid grid-cols-1 gap-4 md:grid-cols-2"
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: "-60px" }}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+      }}
+    >
+      {projects.map((p, i) => (
+        <ProjectCard key={p.id} project={p} index={i} />
+      ))}
+    </motion.div>
   );
 }

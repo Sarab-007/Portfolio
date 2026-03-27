@@ -1,28 +1,61 @@
 "use client";
-import { motion } from "framer-motion";
+
+import { motion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
-export function Stagger({ children }: { children: ReactNode }) {
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+export function Stagger({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   return (
     <motion.div
+      className={`transform-gpu will-change-transform ${className || ""}`}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "-120px" }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+      viewport={{ once: true, margin: "-100px" }}
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: 0.06,   // reduced
+            delayChildren: delay,
+          },
+        },
+      }}
     >
       {children}
     </motion.div>
   );
 }
 
-export function StaggerItem({ children }: { children: ReactNode }) {
+export function StaggerItem({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 16, filter: "blur(8px)" },
-        show: { opacity: 1, y: 0, filter: "blur(0px)" },
-      }}
-      transition={{ duration: 0.55, ease: "easeOut" }}
+      className={`transform-gpu will-change-transform ${className || ""}`}
+      variants={itemVariants}
     >
       {children}
     </motion.div>

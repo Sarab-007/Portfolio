@@ -44,7 +44,7 @@ export default function ContactForm() {
         <input
           value={form.name}
           onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-          className="h-11 rounded-2xl border border-zinc-200/70 bg-white/60 px-4 text-sm shadow-sm backdrop-blur outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800/70 dark:bg-zinc-950/35 dark:focus:ring-zinc-700"
+          className="h-11 rounded-2xl border border-zinc-200/70 bg-white/60 px-4 text-sm backdrop-blur-sm outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800/70 dark:bg-zinc-950/35 dark:focus:ring-zinc-700"
           placeholder="Your name"
           autoComplete="name"
         />
@@ -56,7 +56,7 @@ export default function ContactForm() {
         <input
           value={form.email}
           onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-          className="h-11 rounded-2xl border border-zinc-200/70 bg-white/60 px-4 text-sm shadow-sm backdrop-blur outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800/70 dark:bg-zinc-950/35 dark:focus:ring-zinc-700"
+          className="h-11 rounded-2xl border border-zinc-200/70 bg-white/60 px-4 text-sm backdrop-blur-sm outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800/70 dark:bg-zinc-950/35 dark:focus:ring-zinc-700"
           placeholder="you@email.com"
           autoComplete="email"
         />
@@ -68,7 +68,7 @@ export default function ContactForm() {
         <textarea
           value={form.message}
           onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
-          className="min-h-[120px] rounded-2xl border border-zinc-200/70 bg-white/60 p-4 text-sm shadow-sm backdrop-blur outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800/70 dark:bg-zinc-950/35 dark:focus:ring-zinc-700"
+          className="min-h-[120px] rounded-2xl border border-zinc-200/70 bg-white/60 p-4 text-sm backdrop-blur-sm outline-none focus:ring-2 focus:ring-zinc-300 dark:border-zinc-800/70 dark:bg-zinc-950/35 dark:focus:ring-zinc-700"
           placeholder="Tell me about your project…"
         />
         {errors.message && <p className="text-xs text-red-500">{errors.message}</p>}
