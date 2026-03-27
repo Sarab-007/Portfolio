@@ -3,6 +3,7 @@ import AppProviders from "@/src/providers/app-providers";
 import type { Metadata, Viewport } from "next";
 import { siteConfig } from "@/src/config/site";
 import SmoothScroll from "@/src/providers/smooth-scroll";
+import MouseGlow from "@/src/providers/mouse-glow";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -37,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="site-bg ">
 
         <div className="bg-fx" aria-hidden="true" />
-
+        <MouseGlow />
         <SmoothScroll>
           <div className="relative z-10">
             <AppProviders>{children}</AppProviders>
