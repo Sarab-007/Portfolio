@@ -1,1 +1,10 @@
-import {cn} from '@/src/lib/cn';export default function Container({children,className}:{children:React.ReactNode;className?:string}){return <div className={cn('w-full',className)}>{children}</div>}
+import { cn } from "@/src/lib/cn";
+
+interface ContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export default function Container({ children, className }: ContainerProps) {
+  return <div className={cn("w-full", className)}>{children}</div>;
+}

@@ -1,10 +1,9 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useRef, useState, type MouseEvent } from "react";
+import { useRef, useState, useCallback, type MouseEvent } from "react";
 import type { Project } from "../types/project.types";
-
-const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
+import { EXPO_OUT } from "@/src/lib/motion";
 
 interface Props {
   project: Project;
@@ -12,8 +11,7 @@ interface Props {
 }
 
 export default function ProjectCard({ project, index = 0 }: Props) {
-  // Cast to any so this works regardless of your exact Project shape
-  const { title, description, tags, href, image } = project as any;
+  const { title, description, stack, highlights, image, links } = project;
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -25,27 +23,32 @@ export default function ProjectCard({ project, index = 0 }: Props) {
   const rotateX = useTransform(springY, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(springX, [-0.5, 0.5], ["-5deg", "5deg"]);
 
-  /* ── Spotlight: tracked via plain state so it re-renders the gradient ── */
+  /* ── Spotlight ── */
   const [spot, setSpot] = useState({ x: 50, y: 50 });
   const [hovered, setHovered] = useState(false);
 
-  const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-    rawX.set(px - 0.5);
-    rawY.set(py - 0.5);
-    setSpot({ x: px * 100, y: py * 100 });
-  };
+  const onMouseMove = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      const rect = ref.current?.getBoundingClientRect();
+      if (!rect) return;
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      rawX.set(px - 0.5);
+      rawY.set(py - 0.5);
+      setSpot({ x: px * 100, y: py * 100 });
+    },
+    [rawX, rawY],
+  );
 
-  const onMouseLeave = () => {
+  const onMouseLeave = useCallback(() => {
     rawX.set(0);
     rawY.set(0);
     setHovered(false);
-  };
+  }, [rawX, rawY]);
 
-  const onMouseEnter = () => setHovered(true);
+  const onMouseEnter = useCallback(() => setHovered(true), []);
+
+  const demoHref = links?.demo;
 
   return (
     <motion.div
@@ -53,7 +56,12 @@ export default function ProjectCard({ project, index = 0 }: Props) {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onMouseEnter={onMouseEnter}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: "900px" }}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        perspective: "900px",
+      }}
       initial={{ opacity: 0, y: 36, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-60px" }}
@@ -63,7 +71,8 @@ export default function ProjectCard({ project, index = 0 }: Props) {
       <motion.div
         className="relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/70 backdrop-blur dark:border-zinc-800/60 dark:bg-zinc-950/35"
         whileHover={{
-          boxShadow: "0 20px 60px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(99,102,241,0.12)",
+          boxShadow:
+            "0 20px 60px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(99,102,241,0.12)",
           borderColor: "rgba(99,102,241,0.3)",
           transition: { duration: 0.3 },
         }}
@@ -91,55 +100,52 @@ export default function ProjectCard({ project, index = 0 }: Props) {
         )}
 
         <div className="p-5">
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">{title}</h3>
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+            {title}
+          </h3>
 
           <p className="mt-2 text-sm leading-5 text-zinc-600 dark:text-zinc-300">
             {description}
           </p>
 
-          {/* Tags — stagger-bounce on card hover */}
-          {tags?.length > 0 && (
-            <motion.div
-              className="mt-4 flex flex-wrap gap-1.5"
-              initial="rest"
-              whileHover="hover"
-              variants={{ rest: {}, hover: { transition: { staggerChildren: 0.02 } } }}
-            >
-              {(tags as string[]).map((tag, i) => (
-                <motion.span
+          {/* Tech stack tags */}
+          {stack.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {stack.map((tag) => (
+                <span
                   key={tag}
                   className="rounded-full border border-zinc-200/60 bg-zinc-100/60 px-2.5 py-0.5 text-[11px] font-medium text-zinc-600 dark:border-zinc-800/60 dark:bg-zinc-900/50 dark:text-zinc-400"
-                  variants={{
-                    rest:  { y: 0, scale: 1 },
-                    hover: {
-                      y: -2,
-                      scale: 1.05,
-                      transition: { delay: i * 0.04, type: "spring", stiffness: 500, damping: 22 },
-                    },
-                  }}
                 >
                   {tag}
-                </motion.span>
+                </span>
               ))}
-            </motion.div>
+            </div>
           )}
 
           {/* View project */}
-          {href && (
+          {demoHref && (
             <motion.a
-              href={href}
+              href={demoHref}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-indigo-500"
               initial={{ opacity: 0, x: -8 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 + 0.3, duration: 0.4, ease: EXPO_OUT }}
+              transition={{
+                delay: index * 0.1 + 0.3,
+                duration: 0.4,
+                ease: EXPO_OUT,
+              }}
             >
               <span>View project</span>
               <motion.span
                 animate={{ x: [0, 4, 0] }}
-                transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 1.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               >
                 →
               </motion.span>

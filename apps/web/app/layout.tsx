@@ -32,11 +32,14 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="site-bg ">
-
+      <body className="site-bg">
         <div className="bg-fx" aria-hidden="true" />
         <MouseGlow />
         <SmoothScroll>
@@ -44,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppProviders>{children}</AppProviders>
           </div>
         </SmoothScroll>
-
       </body>
     </html>
   );

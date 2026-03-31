@@ -5,10 +5,10 @@ import type { ReactNode } from "react";
 
 type Direction = "up" | "down" | "left" | "right";
 
-const directionMap = {
-  up:    { y: 24, x: 0 },
-  down:  { y: -24, x: 0 },
-  left:  { x: 24, y: 0 },
+const DIRECTION_OFFSETS: Record<Direction, { x: number; y: number }> = {
+  up: { y: 24, x: 0 },
+  down: { y: -24, x: 0 },
+  left: { x: 24, y: 0 },
   right: { x: -24, y: 0 },
 };
 
@@ -32,7 +32,7 @@ export default function Reveal({
   const variants: Variants = {
     hidden: {
       opacity: 0,
-      ...directionMap[direction],
+      ...DIRECTION_OFFSETS[direction],
     },
     visible: {
       opacity: 1,
@@ -41,14 +41,14 @@ export default function Reveal({
       transition: {
         duration,
         delay,
-        ease: [0.22, 1, 0.36, 1], // smoother than expo
+        ease: [0.22, 1, 0.36, 1],
       },
     },
   };
 
   return (
     <motion.div
-      className={`transform-gpu will-change-transform ${className || ""}`}
+      className={className}
       initial="hidden"
       whileInView="visible"
       viewport={{ once, margin: "-100px" }}

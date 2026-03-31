@@ -4,8 +4,6 @@ import { projects } from "../data/projects.data";
 import ProjectCard from "./project-card";
 import { motion } from "framer-motion";
 
-const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
-
 export default function ProjectGrid() {
   return (
     <motion.div
@@ -15,7 +13,9 @@ export default function ProjectGrid() {
       viewport={{ once: true, margin: "-60px" }}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+        show: {
+          transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+        },
       }}
     >
       {projects.map((p, i) => (

@@ -3,23 +3,31 @@
 import { useEffect } from "react";
 import Lenis from "@studio-freight/lenis";
 
-export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+/** Smooth scroll provider using Lenis. Cleans up properly on unmount. */
+export default function SmoothScroll({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => 1 - Math.pow(1 - t, 4),
-      wheelMultiplier: 1, // optional tuning
-      touchMultiplier: 1, // optional tuning
+      wheelMultiplier: 1,
+      touchMultiplier: 1,
     });
+
+    let rafId: number;
 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);

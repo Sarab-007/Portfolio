@@ -5,24 +5,30 @@ import { navConfig } from "@/src/config/navigation";
 import { siteConfig } from "@/src/config/site";
 import { motion } from "framer-motion";
 import Reveal from "@/src/components/motion/reveal";
+import SectionHeader from "@/src/components/layout/section-header";
+import { EXPO_OUT } from "@/src/lib/motion";
 
-const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
-
-/* ── Single skill icon with magnetic spring on hover ── */
-function SkillIcon({ item, index }: { item: { name: string; icon: string }; index: number }) {
+/* ── Single skill icon with tooltip ── */
+function SkillIcon({
+  item,
+  index,
+}: {
+  item: { name: string; icon: string };
+  index: number;
+}) {
   return (
     <motion.div
       title={item.name}
       className="group relative flex items-center justify-center rounded-xl border border-zinc-200/60 bg-white/60 p-3 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/30"
       variants={{
-       hidden: { opacity: 0, y: 40 },
+        hidden: { opacity: 0, y: 40 },
         show: {
           opacity: 1,
           scale: 1,
           y: 0,
           transition: {
             duration: 0.45,
-            ease: [0.34, 1.56, 0.64, 1], // back-out spring
+            ease: [0.34, 1.56, 0.64, 1],
             delay: index * 0.035,
           },
         },
@@ -39,24 +45,20 @@ function SkillIcon({ item, index }: { item: { name: string; icon: string }; inde
       <img
         src={item.icon}
         alt={item.name}
+        loading="lazy"
         className="h-6 w-6 opacity-80 transition group-hover:opacity-100 dark:invert"
       />
 
       {/* Tooltip */}
-      <motion.span
-        className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2 py-0.5 text-[10px] font-medium text-white opacity-0 group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900"
-        initial={{ y: 4, opacity: 0 }}
-        whileHover={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.15 }}
-      >
+      <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2 py-0.5 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900">
         {item.name}
-      </motion.span>
+      </span>
     </motion.div>
   );
 }
 
 /* ── Skill group card ── */
-function Group({
+function SkillGroup({
   title,
   items,
   delay = 0,
@@ -91,7 +93,7 @@ function Group({
 
       {/* Icons grid — staggered */}
       <motion.div
-        className="mt-4 grid grid-cols-4 gap-4 sm:grid-cols-5 md:grid-cols-6"
+        className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-40px" }}
@@ -113,34 +115,25 @@ function Group({
   );
 }
 
-export default function SkillsSection() {
-  const groups = [
-    { title: "Languages",  items: siteConfig.skills.languages,  delay: 0 },
-    { title: "Frameworks", items: siteConfig.skills.frameworks, delay: 0.06 },
-    { title: "Tools & Tech", items: siteConfig.skills.tools,   delay: 0.12 },
-    { title: "Databases",  items: siteConfig.skills.databases,  delay: 0.18 },
-  ];
+/* ── Skills groups data ── */
+const SKILL_GROUPS = [
+  { title: "Languages", items: siteConfig.skills.languages, delay: 0 },
+  { title: "Frameworks", items: siteConfig.skills.frameworks, delay: 0.06 },
+  { title: "Tools & Tech", items: siteConfig.skills.tools, delay: 0.12 },
+  { title: "Databases", items: siteConfig.skills.databases, delay: 0.18 },
+] as const;
 
+export default function SkillsSection() {
   return (
     <section id={navConfig.sections.skills.id} className="pt-16 min-h-[60vh]">
       <Container>
         <Reveal>
-          <div className="rounded-3xl border border-zinc-200/60 bg-white/60 p-8 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40">
-            {/* Section header */}
-            <div className="flex items-center gap-3 mb-6">
-              <h2 className="text-xl font-semibold">Skills</h2>
-              <motion.div
-                className="h-px flex-1 bg-gradient-to-r from-indigo-400/50 to-transparent"
-                initial={{ scaleX: 0, transformOrigin: "left" }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: EXPO_OUT, delay: 0.2 }}
-              />
-            </div>
+          <div className="rounded-3xl border border-zinc-200/60 bg-white/60 p-6 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40 md:p-8">
+            <SectionHeader title="Skills" />
 
             <div className="grid gap-4 md:grid-cols-2">
-              {groups.map((g) => (
-                <Group key={g.title} {...g} />
+              {SKILL_GROUPS.map((g) => (
+                <SkillGroup key={g.title} {...g} />
               ))}
             </div>
           </div>

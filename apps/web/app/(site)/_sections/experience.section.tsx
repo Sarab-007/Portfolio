@@ -5,31 +5,20 @@ import { navConfig } from "@/src/config/navigation";
 import { siteConfig } from "@/src/config/site";
 import { motion } from "framer-motion";
 import Reveal from "@/src/components/motion/reveal";
-
-const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
-
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <div className="flex items-center gap-3 mb-6">
-      <h2 className="text-xl font-semibold">{title}</h2>
-      <motion.div
-        className="h-px flex-1 bg-gradient-to-r from-indigo-400/50 to-transparent"
-        initial={{ scaleX: 0, transformOrigin: "left" }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, ease: EXPO_OUT, delay: 0.2 }}
-      />
-    </div>
-  );
-}
+import SectionHeader from "@/src/components/layout/section-header";
+import { EXPO_OUT } from "@/src/lib/motion";
 
 export default function ExperienceSection() {
   return (
-    <section id={navConfig.sections.experience.id} className="pt-16 min-h-[60vh]">
+    <section
+      id={navConfig.sections.experience.id}
+      className="pt-16 min-h-[60vh]"
+    >
       <Container>
         <Reveal>
-          <div className="rounded-3xl border border-zinc-200/60 bg-white/60 p-8 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40">
+          <div className="rounded-3xl border border-zinc-200/60 bg-white/60 p-6 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40 md:p-8">
             <SectionHeader title="Experience" />
+
             <div className="space-y-4">
               {siteConfig.experience.map((e, i) => (
                 <motion.div
@@ -38,12 +27,20 @@ export default function ExperienceSection() {
                   initial={{ opacity: 0, x: -24, scale: 0.98 }}
                   whileInView={{ opacity: 1, x: 0, scale: 1 }}
                   viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.6, ease: EXPO_OUT, delay: i * 0.1 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: EXPO_OUT,
+                    delay: i * 0.1,
+                  }}
                   whileHover={{
                     x: 4,
                     boxShadow: "0 8px 32px -8px rgba(0,0,0,0.15)",
                     borderColor: "rgba(99,102,241,0.25)",
-                    transition: { type: "spring", stiffness: 400, damping: 28 },
+                    transition: {
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 28,
+                    },
                   }}
                 >
                   {/* Left accent bar */}
@@ -52,8 +49,13 @@ export default function ExperienceSection() {
                     initial={{ scaleY: 0, transformOrigin: "top" }}
                     whileInView={{ scaleY: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, ease: EXPO_OUT, delay: i * 0.1 + 0.2 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: EXPO_OUT,
+                      delay: i * 0.1 + 0.2,
+                    }}
                   />
+
                   <div className="pl-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="font-medium">{e.title}</div>
@@ -62,14 +64,19 @@ export default function ExperienceSection() {
                         initial={{ opacity: 0, scale: 0.8 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 + 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+                        transition={{
+                          delay: i * 0.1 + 0.3,
+                          ease: [0.34, 1.56, 0.64, 1],
+                        }}
                       >
                         {e.period}
                       </motion.div>
                     </div>
+
                     <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
                       {e.company} • {e.location}
                     </div>
+
                     <motion.ul
                       className="mt-3 space-y-1 pl-4 text-sm text-zinc-600 dark:text-zinc-300"
                       initial="hidden"
@@ -77,7 +84,12 @@ export default function ExperienceSection() {
                       viewport={{ once: true }}
                       variants={{
                         hidden: {},
-                        show: { transition: { staggerChildren: 0.06, delayChildren: i * 0.1 + 0.3 } },
+                        show: {
+                          transition: {
+                            staggerChildren: 0.06,
+                            delayChildren: i * 0.1 + 0.3,
+                          },
+                        },
                       }}
                     >
                       {e.highlights.map((h) => (
@@ -86,7 +98,11 @@ export default function ExperienceSection() {
                           className="relative pl-3 before:absolute before:left-0 before:top-2 before:h-1 before:w-1 before:rounded-full before:bg-indigo-400"
                           variants={{
                             hidden: { opacity: 0, x: -8 },
-                            show: { opacity: 1, x: 0, transition: { duration: 0.4, ease: EXPO_OUT } },
+                            show: {
+                              opacity: 1,
+                              x: 0,
+                              transition: { duration: 0.4, ease: EXPO_OUT },
+                            },
                           }}
                         >
                           {h}

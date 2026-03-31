@@ -3,13 +3,12 @@
 import { siteConfig } from "@/src/config/site";
 import { Github, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
+import { EXPO_OUT } from "@/src/lib/motion";
 
-const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
-
-const socialLinks = [
+const SOCIAL_LINKS = [
   { href: siteConfig.links.github, label: "GitHub", Icon: Github },
   { href: siteConfig.links.linkedin, label: "LinkedIn", Icon: Linkedin },
-];
+] as const;
 
 export default function Footer() {
   return (
@@ -38,10 +37,12 @@ export default function Footer() {
           viewport={{ once: true }}
           variants={{
             hidden: {},
-            show: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
+            show: {
+              transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+            },
           }}
         >
-          {socialLinks.map(({ href, label, Icon }) => (
+          {SOCIAL_LINKS.map(({ href, label, Icon }) => (
             <motion.a
               key={label}
               href={href}
@@ -65,14 +66,9 @@ export default function Footer() {
               <Icon className="h-4 w-4 transition group-hover:text-zinc-900 dark:group-hover:text-zinc-100" />
 
               {/* Tooltip */}
-              <motion.span
-                className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900"
-                initial={{ y: 4, opacity: 0 }}
-                whileHover={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.2 }}
-              >
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900">
                 {label}
-              </motion.span>
+              </span>
             </motion.a>
           ))}
         </motion.div>
@@ -93,36 +89,32 @@ export default function Footer() {
           >
             {siteConfig.name}
           </motion.span>
-          . Built with {/* ❤️ HEART */}
+          . Built with{" "}
           <motion.span
             className="inline-block"
-            animate={{
-              scale: [1, 1.15, 1],
-            }}
-            transition={{
-              duration: 1.8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           >
             ❤️
           </motion.span>
-          , caffeine {/* ☕ CUP */}
+          , caffeine{" "}
           <motion.span
             className="inline-block"
-            animate={{
-              y: [0, -2, 0],
-              rotate: [0, -2, 2, 0],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            animate={{ y: [0, -2, 0], rotate: [0, -2, 2, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           >
             ☕
           </motion.span>{" "}
-          and Next.js
+          <motion.span className="inline-flex items-center gap-1">
+            and
+            <motion.img
+              src="https://cdn.simpleicons.org/nextdotjs"
+              alt="Next.js"
+              className="h-4 w-4 dark:invert"
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.span>
         </motion.div>
       </div>
     </motion.footer>
