@@ -1,2 +1,2 @@
-export { default as ProjectGrid } from "./components/project-grid";
-export type { Project } from "./types/project.types";
+export { projects } from "./data/projects.data";
+export type { Project, ProjectMetric, ProjectVisual } from "./types/project.types";

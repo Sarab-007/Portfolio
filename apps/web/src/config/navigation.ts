@@ -1,11 +1,11 @@
 export const navConfig = {
   sections: {
-    home: { id: "home", label: "Home" },
-    about: { id: "about", label: "Summary" },
-    projects: { id: "projects", label: "Projects" },
-    skills: { id: "skills", label: "Skills" },
-    experience: { id: "experience", label: "Experience" },
-    education: {id: "education", label: "Education"},
+    home: { id: "home", label: "Intro" },
+    about: { id: "about", label: "Story" },
+    projects: { id: "projects", label: "Work" },
+    skills: { id: "skills", label: "Stack" },
+    experience: { id: "experience", label: "Timeline" },
+    education: { id: "education", label: "Degree" },
     contact: { id: "contact", label: "Contact" },
   },
 } as const;

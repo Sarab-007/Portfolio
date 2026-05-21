@@ -1,256 +1,218 @@
 "use client";
 
-import Container from "@/src/components/layout/container";
+import { useMemo, useRef } from "react";
+import Image from "next/image";
+import { ArrowDown, ArrowUpRight, FileDown, Mail } from "lucide-react";
+import MagneticLink from "@/src/components/ui/magnetic-link";
 import { navConfig } from "@/src/config/navigation";
 import { siteConfig } from "@/src/config/site";
-import Image from "next/image";
-import TypewriterRoles from "@/src/components/motion/typewriter-roles";
-import { EXPO_OUT, fadeUpVariants, staggerContainer } from "@/src/lib/motion";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  type Variants,
-} from "framer-motion";
-import { useRef, useCallback, type MouseEvent } from "react";
-
-/* ── Button variants ── */
-const buttonVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.55, ease: EXPO_OUT, delay: 0.55 + i * 0.09 },
-  }),
-};
-
-/* ── 3-D tilt card wrapper (disabled on touch devices) ── */
-function TiltCard({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-
-  const springX = useSpring(rawX, { stiffness: 140, damping: 22 });
-  const springY = useSpring(rawY, { stiffness: 140, damping: 22 });
-
-  const rotateX = useTransform(springY, [-0.5, 0.5], ["3deg", "-3deg"]);
-  const rotateY = useTransform(springX, [-0.5, 0.5], ["-6deg", "3deg"]);
-
-  const onMouseMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      const rect = ref.current?.getBoundingClientRect();
-      if (!rect) return;
-      rawX.set((e.clientX - rect.left) / rect.width - 0.5);
-      rawY.set((e.clientY - rect.top) / rect.height - 0.5);
-    },
-    [rawX, rawY],
-  );
-
-  const onMouseLeave = useCallback(() => {
-    rawX.set(0);
-    rawY.set(0);
-  }, [rawX, rawY]);
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      className="perspective-[1000px]"
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ── Avatar with floating ring ── */
-function AnimatedAvatar() {
-  return (
-    <div className="relative mx-auto w-full max-w-[220px] md:max-w-[300px]">
-      {/* Pulsing glow ring */}
-      <motion.div
-        className="absolute inset-0 rounded-full"
-        animate={{
-          boxShadow: [
-            "0 0 0 0px rgba(99,102,241,0.35)",
-            "0 0 0 14px rgba(99,102,241,0)",
-          ],
-        }}
-        transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
-      />
-
-      {/* Floating rotation ring */}
-      <motion.div
-        className="absolute -inset-4 rounded-full border border-dashed border-zinc-300/50 dark:border-zinc-700/50"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute -inset-8 hidden rounded-full border border-dashed border-zinc-200/40 dark:border-zinc-800/40 md:block"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-      />
-
-      {/* Avatar image */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px) saturate(1)" }}
-        transition={{ duration: 1, delay: 0.5, ease: EXPO_OUT }}
-      >
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Image
-            src="/avatar.png"
-            alt={`${siteConfig.name} headshot`}
-            width={1000}
-            height={1000}
-            priority
-            className="relative h-auto w-full object-cover drop-shadow-xl"
-          />
-        </motion.div>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ── Hero data ── */
-const HERO_BUTTONS = [
-  {
-    href: `#${navConfig.sections.projects.id}`,
-    label: "View Projects",
-    primary: true,
-  },
-  { href: "/resume.pdf", label: "Download Resume", primary: false },
-  {
-    href: `#${navConfig.sections.contact.id}`,
-    label: "Contact",
-    primary: false,
-  },
-] as const;
-
-const TYPEWRITER_ROLES = [
-  "Creating Scalable Web Apps",
-  "Building Intuitive Interfaces",
-  "Turning Ideas into Code",
-  "Crafting Seamless Experiences",
-  "Optimizing Performance",
-  "Solving Real-World Problems",
-] as const;
+import { registerGsap, useGSAP } from "@/src/lib/gsap";
+import { usePrefersReducedMotion } from "@/src/hooks/use-prefers-reduced-motion";
 
 export default function HeroSection() {
+  const rootRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const headlineWords = useMemo(
+    () => siteConfig.profile.headline.split(" "),
+    [],
+  );
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
+      const { gsap } = registerGsap();
+
+      const ctx = gsap.context(() => {
+        const isSmallScreen = window.matchMedia("(max-width: 767px)").matches;
+
+        if (isSmallScreen) {
+          gsap.from(".hero-kicker, .hero-copy, .hero-portrait, .hero-stat", {
+            y: 14,
+            autoAlpha: 0,
+            duration: 0.42,
+            stagger: 0.04,
+            delay: 0.08,
+            ease: "power3.out",
+          });
+
+          return;
+        }
+
+        const timeline = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          delay: 0.08,
+        });
+
+        timeline
+          .from(".hero-kicker", { y: 18, autoAlpha: 0, duration: 0.55 })
+          .from(
+            ".hero-word",
+            {
+              yPercent: 112,
+              rotateX: -72,
+              autoAlpha: 0,
+              transformOrigin: "left bottom",
+              duration: 0.82,
+              stagger: 0.045,
+              ease: "expo.out",
+            },
+            "-=0.18",
+          )
+          .from(
+            ".hero-copy",
+            { y: 24, autoAlpha: 0, duration: 0.72, stagger: 0.08 },
+            "-=0.42",
+          )
+          .from(
+            ".hero-portrait",
+            { y: 42, rotate: -3, autoAlpha: 0, duration: 1.05 },
+            "-=0.72",
+          )
+          .from(
+            ".hero-stat",
+            { y: 18, autoAlpha: 0, duration: 0.55, stagger: 0.08 },
+            "-=0.56",
+          );
+
+        gsap.to(".hero-ambient", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        });
+      }, rootRef);
+
+      return () => ctx.revert();
+    },
+    { dependencies: [prefersReducedMotion], scope: rootRef },
+  );
+
   return (
     <section
       id={navConfig.sections.home.id}
-      className="pt-14 md:pt-20 min-h-[100dvh]"
+      ref={rootRef}
+      className="relative overflow-hidden px-4 pt-28 lg:min-h-[100svh]"
+      aria-labelledby="hero-title"
     >
-      <Container>
-        <TiltCard>
-          <motion.div
-            className="grid items-center gap-8 rounded-3xl border border-zinc-200/60 bg-white/60 p-6 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40 md:grid-cols-[1.2fr_0.8fr] md:gap-10 md:p-12"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.9, ease: EXPO_OUT }}
+      <div className="hero-ambient absolute left-1/2 top-20 h-[560px] w-[70vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(243,188,84,0.12),transparent_62%)] blur-3xl" />
+
+      <div className="section-shell relative grid items-center gap-10 pb-16 lg:min-h-[calc(100svh-7rem)] lg:grid-cols-[0.98fr_1.02fr]">
+        <div className="relative z-10 max-w-4xl">
+          <p className="hero-kicker scene-label">{siteConfig.profile.eyebrow}</p>
+
+          <h1
+            id="hero-title"
+            className="mt-6 max-w-5xl text-balance text-4xl font-semibold leading-[1.04] text-white sm:text-5xl md:text-6xl 2xl:text-7xl"
           >
-            {/* ── Left column ── */}
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              animate="show"
+            {headlineWords.map((word, index) => (
+              <span key={`${word}-${index}`} className="reveal-mask inline-block">
+                <span className="hero-word inline-block pr-3">{word}</span>
+              </span>
+            ))}
+          </h1>
+
+          <p className="hero-copy mt-7 max-w-2xl text-base leading-8 text-[rgb(var(--soft))] md:text-lg">
+            {siteConfig.summary}
+          </p>
+
+          <div className="hero-copy mt-8 flex flex-wrap gap-3">
+            <MagneticLink
+              href={`#${navConfig.sections.projects.id}`}
+              variant="primary"
+              icon={<ArrowDown className="h-4 w-4" aria-hidden="true" />}
+              cursorLabel="explore"
             >
-              {/* Greeting badge */}
-              <motion.div variants={fadeUpVariants}>
-                <motion.span
-                  className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200/70 bg-white/70 px-3 py-1 text-xs font-medium text-zinc-500 backdrop-blur dark:border-zinc-800/70 dark:bg-zinc-900/50 dark:text-zinc-400"
-                  whileHover={{ scale: 1.04 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                >
-                  <motion.span
-                    className="h-1.5 w-1.5 rounded-full bg-emerald-500"
-                    animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  Available for work
-                </motion.span>
-              </motion.div>
+              View Work
+            </MagneticLink>
+            <MagneticLink
+              href="/resume.pdf"
+              download
+              variant="secondary"
+              icon={<FileDown className="h-4 w-4" aria-hidden="true" />}
+              cursorLabel="resume"
+            >
+              Resume
+            </MagneticLink>
+            <MagneticLink
+              href={`mailto:${siteConfig.email}`}
+              variant="ghost"
+              icon={<Mail className="h-4 w-4" aria-hidden="true" />}
+              cursorLabel="email"
+            >
+              Email
+            </MagneticLink>
+          </div>
 
-              {/* Name */}
-              <motion.h1
-                variants={fadeUpVariants}
-                className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl md:text-6xl"
-              >
-                Hi, I am{" "}
-                <motion.span
-                  className="relative inline-block"
-                  whileHover={{ y: -1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                >
-                  Sarab
-                  {/* Underline swipe */}
-                  <motion.span
-                    className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
-                    initial={{ scaleX: 0, transformOrigin: "left" }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.7, delay: 0.9, ease: EXPO_OUT }}
-                  />
-                </motion.span>
-              </motion.h1>
-
-              {/* Typewriter */}
-              <motion.p
-                variants={fadeUpVariants}
-                className="mt-2 text-base md:text-lg text-zinc-600 dark:text-zinc-300"
-              >
-                <TypewriterRoles
-                  roles={[...TYPEWRITER_ROLES]}
-                  className="text-2xl font-bold text-red-600 sm:text-3xl"
-                />
-              </motion.p>
-
-              {/* Summary */}
-              <motion.p
-                variants={fadeUpVariants}
-                className="mt-5 max-w-2xl text-sm leading-6 text-zinc-600 dark:text-zinc-300"
-              >
-                {siteConfig.summary}
-              </motion.p>
-
-              {/* CTA buttons */}
-              <div className="mt-8 flex flex-wrap gap-3">
-                {HERO_BUTTONS.map((btn, i) => (
-                  <motion.a
-                    key={btn.href}
-                    href={btn.href}
-                    custom={i}
-                    variants={buttonVariants}
-                    initial="hidden"
-                    animate="show"
-                    whileHover={{ scale: 1.04, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                    {...(btn.label === "Download Resume" ? { download: true } : {})}
-                    className={
-                      btn.primary
-                        ? "rounded-2xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white shadow-sm dark:bg-white dark:text-zinc-900"
-                        : "rounded-2xl border border-zinc-200/70 bg-white/60 px-5 py-3 text-sm font-medium backdrop-blur-sm dark:border-zinc-800/70 dark:bg-zinc-950/40"
-                    }
-                  >
-                    {btn.label}
-                  </motion.a>
-                ))}
+          <div className="mt-12 grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 md:grid-cols-4">
+            {siteConfig.profile.stats.map((stat) => (
+              <div key={stat.label} className="hero-stat bg-black/[0.45] p-4">
+                <div className="text-2xl font-semibold text-white">
+                  {stat.value}
+                </div>
+                <div className="mt-2 text-xs leading-5 text-white/[0.48]">
+                  {stat.label}
+                </div>
               </div>
-            </motion.div>
+            ))}
+          </div>
+        </div>
 
-            {/* ── Right column — avatar ── */}
-            <AnimatedAvatar />
-          </motion.div>
-        </TiltCard>
-      </Container>
+        <div className="hero-portrait relative min-h-[430px] sm:min-h-[520px] lg:min-h-[680px]">
+          <div className="absolute inset-0 border border-white/10 bg-black/[0.24]" />
+          <div className="absolute inset-6 border border-white/10" />
+          <div className="absolute left-5 right-5 top-5 flex items-center justify-between text-[10px] uppercase text-white/[0.42]">
+            <span>{siteConfig.role}</span>
+            <span>{siteConfig.tagline}</span>
+          </div>
+          <div className="absolute inset-x-10 bottom-10 top-20 overflow-hidden rounded-lg border border-white/10 bg-[rgb(var(--panel))]/60">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:44px_44px]" />
+            <div className="absolute inset-x-0 top-0 h-12 border-b border-white/10 bg-black/[0.35]" />
+            <div className="absolute left-4 top-4 flex gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-[rgb(var(--rose))]" />
+              <span className="h-2 w-2 rounded-full bg-[rgb(var(--accent))]" />
+              <span className="h-2 w-2 rounded-full bg-[rgb(var(--emerald))]" />
+            </div>
+            <Image
+              src="/avatar.png"
+              alt={`${siteConfig.name} portrait`}
+              width={1000}
+              height={1000}
+              priority
+              sizes="(min-width: 1024px) 44vw, 80vw"
+              className="absolute bottom-0 left-1/2 h-[88%] w-auto -translate-x-1/2 object-contain drop-shadow-[0_34px_80px_rgba(0,0,0,0.55)]"
+            />
+            <div className="absolute bottom-6 left-6 right-6 rounded-lg border border-white/10 bg-black/70 p-4 backdrop-blur">
+              <p className="text-xs uppercase text-[rgb(var(--accent))]">
+                current signal
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/[0.72]">
+                {siteConfig.profile.promise}
+              </p>
+            </div>
+          </div>
+          <div className="absolute right-0 top-24 hidden rounded-lg border border-white/10 bg-black/[0.55] p-4 text-xs text-white/[0.62] backdrop-blur md:block">
+            <span className="block text-[rgb(var(--cyan))]">API</span>
+            <span>Frontend + Backend sync</span>
+          </div>
+          <div className="absolute bottom-28 left-0 hidden rounded-lg border border-white/10 bg-black/[0.55] p-4 text-xs text-white/[0.62] backdrop-blur md:block">
+            <span className="block text-[rgb(var(--accent))]">CI/CD</span>
+            <span>Clean releases, less drama</span>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href={`#${navConfig.sections.about.id}`}
+        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-xs uppercase text-white/[0.45] md:flex"
+        data-cursor="scroll"
+      >
+        Scroll
+        <ArrowDown className="h-3 w-3" aria-hidden="true" />
+      </a>
     </section>
   );
 }

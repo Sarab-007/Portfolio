@@ -1,121 +1,132 @@
 "use client";
 
-import Container from "@/src/components/layout/container";
+import { useRef } from "react";
+import { BriefcaseBusiness, CheckCircle2 } from "lucide-react";
 import { navConfig } from "@/src/config/navigation";
 import { siteConfig } from "@/src/config/site";
-import { motion } from "framer-motion";
-import Reveal from "@/src/components/motion/reveal";
-import SectionHeader from "@/src/components/layout/section-header";
-import { EXPO_OUT } from "@/src/lib/motion";
+import { registerGsap, useGSAP } from "@/src/lib/gsap";
+import { usePrefersReducedMotion } from "@/src/hooks/use-prefers-reduced-motion";
 
 export default function ExperienceSection() {
+  const rootRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
+      const { gsap } = registerGsap();
+
+      const ctx = gsap.context(() => {
+        gsap.from(".experience-heading", {
+          y: 28,
+          autoAlpha: 0,
+          duration: 0.72,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top 72%",
+          },
+        });
+
+        gsap.from(".timeline-line", {
+          scaleY: 0,
+          transformOrigin: "top center",
+          duration: 1.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".experience-list",
+            start: "top 74%",
+          },
+        });
+
+        gsap.from(".experience-item", {
+          x: -32,
+          autoAlpha: 0,
+          duration: 0.76,
+          stagger: 0.14,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".experience-list",
+            start: "top 70%",
+          },
+        });
+      }, rootRef);
+
+      return () => ctx.revert();
+    },
+    { dependencies: [prefersReducedMotion], scope: rootRef },
+  );
+
   return (
     <section
       id={navConfig.sections.experience.id}
-      className="pt-16 min-h-[60vh]"
+      ref={rootRef}
+      className="relative py-28 md:py-36"
+      aria-labelledby="experience-title"
     >
-      <Container>
-        <Reveal>
-          <div className="rounded-3xl border border-zinc-200/60 bg-white/60 p-6 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40 md:p-8">
-            <SectionHeader title="Experience" />
+      <div className="section-shell grid gap-12 lg:grid-cols-[0.78fr_1.22fr]">
+        <div>
+          <p className="experience-heading scene-label">career timeline</p>
+          <h2
+            id="experience-title"
+            className="experience-heading mt-6 text-balance text-4xl font-semibold leading-tight text-white md:text-6xl"
+          >
+            Years of turning requirements into reliable shipped software.
+          </h2>
+          <p className="experience-heading mt-6 max-w-md text-sm leading-7 text-[rgb(var(--muted))]">
+            The common thread is operational software: dashboards, workflows,
+            integrations, and interfaces that real teams rely on every day.
+          </p>
+        </div>
 
-            <div className="space-y-4">
-              {siteConfig.experience.map((e, i) => (
-                <motion.div
-                  key={`${e.company}-${e.title}`}
-                  className="relative rounded-2xl border border-zinc-200/60 bg-white/60 p-5 backdrop-blur dark:border-zinc-800/60 dark:bg-zinc-950/35"
-                  initial={{ opacity: 0, x: -24, scale: 0.98 }}
-                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{
-                    duration: 0.6,
-                    ease: EXPO_OUT,
-                    delay: i * 0.1,
-                  }}
-                  whileHover={{
-                    x: 4,
-                    boxShadow: "0 8px 32px -8px rgba(0,0,0,0.15)",
-                    borderColor: "rgba(99,102,241,0.25)",
-                    transition: {
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 28,
-                    },
-                  }}
-                >
-                  {/* Left accent bar */}
-                  <motion.div
-                    className="absolute left-0 top-4 bottom-4 w-[2px] rounded-full bg-gradient-to-b from-indigo-500/60 to-purple-500/30"
-                    initial={{ scaleY: 0, transformOrigin: "top" }}
-                    whileInView={{ scaleY: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 0.5,
-                      ease: EXPO_OUT,
-                      delay: i * 0.1 + 0.2,
-                    }}
-                  />
+        <div className="experience-list relative">
+          <div className="timeline-line absolute bottom-0 left-5 top-0 w-px bg-gradient-to-b from-[rgb(var(--accent))] via-white/20 to-transparent" />
 
-                  <div className="pl-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="font-medium">{e.title}</div>
-                      <motion.div
-                        className="rounded-full border border-zinc-200/60 bg-zinc-100/60 px-2 py-0.5 text-xs text-zinc-500 dark:border-zinc-800/60 dark:bg-zinc-900/50 dark:text-zinc-400"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{
-                          delay: i * 0.1 + 0.3,
-                          ease: [0.34, 1.56, 0.64, 1],
-                        }}
-                      >
-                        {e.period}
-                      </motion.div>
+          <div className="grid gap-5">
+            {siteConfig.experience.map((item) => (
+              <article
+                key={`${item.company}-${item.title}`}
+                className="experience-item relative pl-14"
+              >
+                <div className="absolute left-0 top-0 grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-black text-[rgb(var(--accent))]">
+                  <BriefcaseBusiness className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-2xl font-semibold text-white">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2 text-sm text-white/[0.58]">
+                        {item.company} | {item.location}
+                      </p>
                     </div>
-
-                    <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
-                      {e.company} • {e.location}
-                    </div>
-
-                    <motion.ul
-                      className="mt-3 space-y-1 pl-4 text-sm text-zinc-600 dark:text-zinc-300"
-                      initial="hidden"
-                      whileInView="show"
-                      viewport={{ once: true }}
-                      variants={{
-                        hidden: {},
-                        show: {
-                          transition: {
-                            staggerChildren: 0.06,
-                            delayChildren: i * 0.1 + 0.3,
-                          },
-                        },
-                      }}
-                    >
-                      {e.highlights.map((h) => (
-                        <motion.li
-                          key={h}
-                          className="relative pl-3 before:absolute before:left-0 before:top-2 before:h-1 before:w-1 before:rounded-full before:bg-indigo-400"
-                          variants={{
-                            hidden: { opacity: 0, x: -8 },
-                            show: {
-                              opacity: 1,
-                              x: 0,
-                              transition: { duration: 0.4, ease: EXPO_OUT },
-                            },
-                          }}
-                        >
-                          {h}
-                        </motion.li>
-                      ))}
-                    </motion.ul>
+                    <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-[rgb(var(--accent))]">
+                      {item.period}
+                    </span>
                   </div>
-                </motion.div>
-              ))}
-            </div>
+
+                  <ul className="mt-6 grid gap-3">
+                    {item.highlights.map((highlight) => (
+                      <li
+                        key={highlight}
+                        className="flex gap-3 text-sm leading-6 text-white/[0.64]"
+                      >
+                        <CheckCircle2
+                          className="mt-0.5 h-4 w-4 shrink-0 text-[rgb(var(--emerald))]"
+                          aria-hidden="true"
+                        />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
           </div>
-        </Reveal>
-      </Container>
+        </div>
+      </div>
     </section>
   );
 }

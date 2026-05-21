@@ -1,56 +1,127 @@
 "use client";
 
-import Container from "@/src/components/layout/container";
+import { useMemo, useRef } from "react";
+import { Activity, Code2, Layers3 } from "lucide-react";
 import { navConfig } from "@/src/config/navigation";
 import { siteConfig } from "@/src/config/site";
-import { motion } from "framer-motion";
-import Reveal from "@/src/components/motion/reveal";
-import SectionHeader from "@/src/components/layout/section-header";
+import { registerGsap, useGSAP } from "@/src/lib/gsap";
+import { usePrefersReducedMotion } from "@/src/hooks/use-prefers-reduced-motion";
+
+const principles = [
+  {
+    icon: Layers3,
+    title: "End-to-end ownership",
+    text: "Architecture, APIs, responsive interfaces, delivery pipelines, and cross-functional collaboration.",
+  },
+  {
+    icon: Activity,
+    title: "Performance-first delivery",
+    text: "Fast screens, smooth interactions, maintainable systems, and release habits that keep products stable.",
+  },
+  {
+    icon: Code2,
+    title: "Clean implementation",
+    text: "Readable code, practical abstractions, and UI decisions that support the real business workflow.",
+  },
+];
 
 export default function AboutSection() {
-  const sentences = siteConfig.summaryLong.split(". ");
+  const rootRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const sentences = useMemo(
+    () =>
+      siteConfig.summaryLong
+        .split(". ")
+        .map((sentence) =>
+          sentence.endsWith(".") ? sentence : `${sentence}.`,
+        ),
+    [],
+  );
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
+      const { gsap } = registerGsap();
+
+      const ctx = gsap.context(() => {
+        gsap.from(".about-line", {
+          yPercent: 105,
+          autoAlpha: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top 68%",
+          },
+        });
+
+        gsap.from(".about-principle", {
+          y: 34,
+          autoAlpha: 0,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".about-principles",
+            start: "top 78%",
+          },
+        });
+      }, rootRef);
+
+      return () => ctx.revert();
+    },
+    { dependencies: [prefersReducedMotion], scope: rootRef },
+  );
 
   return (
-    <section id={navConfig.sections.about.id} className="pt-16 min-h-[60vh]">
-      <Container>
-        <Reveal>
-          <div className="rounded-3xl border border-zinc-200/60 bg-white/60 p-6 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-950/40 md:p-8">
-            <SectionHeader title="Professional Summary" />
+    <section
+      id={navConfig.sections.about.id}
+      ref={rootRef}
+      className="relative overflow-hidden py-28 md:py-36"
+      aria-labelledby="about-title"
+    >
+      <div className="section-shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
+        <div>
+          <p className="scene-label">professional summary</p>
+          <h2
+            id="about-title"
+            className="mt-6 text-balance text-4xl font-semibold leading-tight text-white md:text-5xl"
+          >
+            Product-minded engineering for complex web platforms.
+          </h2>
+          <p className="mt-6 max-w-md text-sm leading-7 text-[rgb(var(--muted))]">
+            {siteConfig.profile.promise}
+          </p>
+        </div>
 
-            <motion.div
-              className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-300 space-y-2"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={{
-                hidden: {},
-                show: {
-                  transition: { staggerChildren: 0.12, delayChildren: 0.15 },
-                },
-              }}
-            >
-              {sentences.map((line, i) => (
-                <motion.p
-                  key={i}
-                  variants={{
-                    hidden: { opacity: 0, y: 16 },
-                    show: {
-                      opacity: 1,
-                      y: 0,
-                      transition: {
-                        duration: 0.45,
-                        ease: [0.22, 1, 0.36, 1],
-                      },
-                    },
-                  }}
-                >
-                  {line}.
-                </motion.p>
-              ))}
-            </motion.div>
+        <div>
+          <div className="space-y-4 text-xl leading-9 text-white/[0.82] md:text-2xl md:leading-10">
+            {sentences.map((sentence) => (
+              <span key={sentence} className="reveal-mask">
+                <span className="about-line block">{sentence}</span>
+              </span>
+            ))}
           </div>
-        </Reveal>
-      </Container>
+
+          <div className="about-principles mt-12 grid gap-3 md:grid-cols-3">
+            {principles.map(({ icon: Icon, title, text }) => (
+              <article
+                key={title}
+                className="about-principle rounded-lg border border-white/10 bg-white/[0.04] p-5"
+              >
+                <Icon className="h-5 w-5 text-[rgb(var(--accent))]" />
+                <h3 className="mt-5 text-sm font-semibold text-white">
+                  {title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-white/[0.56]">
+                  {text}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

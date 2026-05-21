@@ -2,32 +2,44 @@
 
 import { useEffect } from "react";
 import Lenis from "@studio-freight/lenis";
+import { gsap, registerGsap } from "@/src/lib/gsap";
 
-/** Smooth scroll provider using Lenis. Cleans up properly on unmount. */
 export default function SmoothScroll({
   children,
 }: {
   children: React.ReactNode;
 }) {
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const narrowViewport = window.matchMedia("(max-width: 767px)").matches;
+
+    if (prefersReducedMotion || coarsePointer || narrowViewport) return;
+
+    const { ScrollTrigger } = registerGsap();
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => 1 - Math.pow(1 - t, 4),
-      wheelMultiplier: 1,
+      duration: 0.86,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 0.78,
       touchMultiplier: 1,
     });
 
-    let rafId: number;
+    lenis.on("scroll", ScrollTrigger.update);
 
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
+    const tick = (time: number) => {
+      lenis.raf(time * 1000);
+    };
 
-    rafId = requestAnimationFrame(raf);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(tick);
       lenis.destroy();
     };
   }, []);

@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { Resend } from "resend";
+import { z } from "zod";
 
 export const runtime = "nodejs";
 
@@ -9,7 +9,6 @@ const schema = z.object({
   message: z.string().min(10),
 });
 
-// Handle preflight
 export function OPTIONS() {
   return Response.json({ ok: true }, { status: 200 });
 }
@@ -22,19 +21,20 @@ export async function POST(req: Request) {
     if (!parsed.success) {
       return Response.json(
         { success: false, message: "Invalid payload" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!process.env.RESEND_API_KEY) {
-      console.warn("RESEND_API_KEY is not set. Simulating a successful email send for demo purposes.");
+      console.warn(
+        "RESEND_API_KEY is not set. Simulating a successful email send for demo purposes.",
+      );
 
-      // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       return Response.json({
         success: true,
-        message: "Thanks — your message was received .",
+        message: "Thanks - your message was received.",
       });
     }
 
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
-      to: process.env.MAIL_TO || "sarabalikhan98@gmail.com",
+      to: process.env.MAIL_TO || siteEmail,
       replyTo: email,
       subject: `New message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
@@ -51,13 +51,15 @@ export async function POST(req: Request) {
 
     return Response.json({
       success: true,
-      message: "Thanks — your message was received.",
+      message: "Thanks - your message was received.",
     });
   } catch (err) {
     console.error("CONTACT API ERROR:", err);
     return Response.json(
       { success: false, message: "Message could not be sent." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
+
+const siteEmail = "sarabalikhan98@gmail.com";
