@@ -5,7 +5,7 @@ export const siteConfig = {
   tagline: "React | Angular | Node.js | Spring Boot",
   availability: "Available for product engineering and full-stack delivery",
   email: "sarabalikhan98@gmail.com",
-  phone: "+971 55 941 0958 UAE || +92 333 941 0958 PK",
+  phone: "+971 55 941 0958 (UAE) || +92 333 792 7922 (PK)",
   location: "Karachi, Pakistan",
   links: {
     github: "https://github.com/Sarab-007",
@@ -22,7 +22,7 @@ export const siteConfig = {
     eyebrow: "Full-stack systems, cinematic interfaces, resilient delivery",
     headline: "Enterprise software with product precision.",
     promise:
-      "I turn complex operational systems into clear, fast, human web experiences.",
+      "I turn complex operational systems into clear, fast and robust web experiences.",
     stats: [
       { value: "7+", label: "years building production software" },
       { value: "4", label: "enterprise platforms featured" },
