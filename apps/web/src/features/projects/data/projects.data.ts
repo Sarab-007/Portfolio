@@ -40,9 +40,9 @@ export const projects: Project[] = [
       "Secure workflows support discovery, offers, escrow, and portfolio growth.",
     ],
     metrics: [
-      { value: "$2.4B+", label: "tracked luxury volume" },
+      { value: "$10M+", label: "tracked luxury volume" },
       { value: "450+", label: "curated global assets" },
-      { value: "50K+", label: "investors in the network" },
+      { value: "5K+", label: "investors in the network" },
     ],
     visual: { signal: "Private market corridor", accent: "amber" },
     links: { demo: "https://terra-exchange.vercel.app/" },
