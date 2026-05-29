@@ -2,6 +2,52 @@ import type { Project } from "../types/project.types";
 
 export const projects: Project[] = [
   {
+    id: "medicura",
+    title: "MediCura",
+    eyebrow: "Next-generation AI healthcare",
+    description:
+      "MediCura turns symptom chaos into calm clinical clarity through guided symptom intake, multilingual access, safer patient context, prescription previews, and admin-ready clinical operations. It is built around the real care journey: intake, context, intelligence, safety, review, and follow-up.",
+    role: "AI healthcare product engineering",
+    period: "Clinical AI",
+    stack: ["Next.js", "AI", "SSE", "Auth", "PDF Export", "Urdu Voice"],
+    highlights: [
+      "AI triage transforms unstructured symptoms into cleaner clinical summaries.",
+      "Safety guardrails highlight red flags, contraindication concerns, and emergency language.",
+      "Urdu voice capture and English translation improve multilingual symptom reporting.",
+      "Admin dashboards centralize patient profiles, disease records, trends, and activity.",
+    ],
+    metrics: [
+      { value: "24/7", label: "guided AI intake" },
+      { value: "Urdu", label: "speech translation path" },
+      { value: "SSE", label: "stream-ready AI responses" },
+    ],
+    visual: { signal: "Care intelligence layer", accent: "emerald" },
+    links: { demo: "https://medicura-health.vercel.app/" },
+  },
+  {
+    id: "terra",
+    title: "TERRA",
+    eyebrow: "Private global property exchange",
+    description:
+      "TERRA transforms landmark real estate into a cinematic, intelligent investment experience: curated global assets, AI-guided discovery, blockchain-secured settlement, and a private marketplace built for modern wealth.",
+    role: "Luxury marketplace and AI discovery UX",
+    period: "Global property exchange",
+    stack: ["Next.js", "AI Concierge", "Blockchain", "Escrow", "Marketplace"],
+    highlights: [
+      "AI-shaped discovery turns every search into a tailored investment narrative.",
+      "Verified asset flows frame provenance, location intelligence, and market context.",
+      "Investor-grade clarity connects yield, liquidity, valuation signals, and comparables.",
+      "Secure workflows support discovery, offers, escrow, and portfolio growth.",
+    ],
+    metrics: [
+      { value: "$2.4B+", label: "tracked luxury volume" },
+      { value: "450+", label: "curated global assets" },
+      { value: "50K+", label: "investors in the network" },
+    ],
+    visual: { signal: "Private market corridor", accent: "amber" },
+    links: { demo: "https://terra-exchange.vercel.app/" },
+  },
+  {
     id: "hive",
     title: "HIVE",
     eyebrow: "IoT smart building command center",
@@ -54,7 +100,7 @@ export const projects: Project[] = [
     title: "HCM",
     eyebrow: "Human Capital Management operations layer",
     description:
-      "System to track employee work hours, leave, and productivity metrics.",
+      "HCM (Human Capital Management) is an enterprise workforce management platform designed to automate and optimize core HR operations while enhancing employee productivity and organizational performance. The system centralizes employee management, attendance tracking, leave handling, recruitment, and automated payroll processing within a single intelligent platform. It provides real-time workforce analytics, KPI-based performance monitoring, and AI-driven insights to support strategic business decisions and improve operational efficiency.",
     role: "Product workflow and reporting engineering",
     period: "Workforce systems",
     stack: ["React", "Node.js", "PostgreSQL"],

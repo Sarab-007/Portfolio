@@ -79,7 +79,7 @@ export default function SkillsSection() {
     <section
       id={navConfig.sections.skills.id}
       ref={rootRef}
-      className="relative overflow-hidden py-28 md:py-36"
+      className="section-frame relative overflow-hidden py-28 md:py-36"
       aria-labelledby="skills-title"
     >
       <div className="skill-depth absolute inset-x-0 top-24 h-px bg-gradient-to-r from-transparent via-[rgba(91,219,232,0.4)] to-transparent" />
@@ -119,7 +119,7 @@ export default function SkillsSection() {
           {skillGroups.map(({ title, icon: Icon, items }) => (
             <article
               key={title}
-              className="skill-group rounded-lg border border-white/10 bg-white/[0.035] p-5"
+              className="skill-group rounded-lg border border-white/10 bg-white/[0.035] p-5 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.055]"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

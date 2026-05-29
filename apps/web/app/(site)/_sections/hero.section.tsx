@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import Image from "next/image";
-import { ArrowDown, ArrowUpRight, FileDown, Mail } from "lucide-react";
+import { ArrowDown, FileDown, Mail } from "lucide-react";
 import MagneticLink from "@/src/components/ui/magnetic-link";
 import { navConfig } from "@/src/config/navigation";
 import { siteConfig } from "@/src/config/site";
@@ -95,10 +95,10 @@ export default function HeroSection() {
     <section
       id={navConfig.sections.home.id}
       ref={rootRef}
-      className="relative overflow-hidden px-4 pt-28 lg:min-h-[100svh]"
+      className="section-frame relative overflow-hidden px-4 pt-28 lg:min-h-[100svh]"
       aria-labelledby="hero-title"
     >
-      <div className="hero-ambient absolute left-1/2 top-20 h-[560px] w-[70vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(243,188,84,0.12),transparent_62%)] blur-3xl" />
+      <div className="hero-ambient absolute inset-x-0 top-0 h-full bg-[linear-gradient(120deg,rgba(243,188,84,0.1),transparent_28%),linear-gradient(240deg,rgba(91,219,232,0.08),transparent_30%)]" />
 
       <div className="section-shell relative grid items-center gap-10 pb-16 lg:min-h-[calc(100svh-7rem)] lg:grid-cols-[0.98fr_1.02fr]">
         <div className="relative z-10 max-w-4xl">
@@ -147,9 +147,9 @@ export default function HeroSection() {
             </MagneticLink>
           </div>
 
-          <div className="mt-12 grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 md:grid-cols-4">
+          <div className="mt-12 grid max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 shadow-[0_22px_70px_rgba(0,0,0,0.18)] md:grid-cols-4">
             {siteConfig.profile.stats.map((stat) => (
-              <div key={stat.label} className="hero-stat bg-black/[0.45] p-4">
+              <div key={stat.label} className="hero-stat bg-black/[0.45] p-4 backdrop-blur">
                 <div className="text-2xl font-semibold text-white">
                   {stat.value}
                 </div>
@@ -162,8 +162,8 @@ export default function HeroSection() {
         </div>
 
         <div className="hero-portrait relative min-h-[430px] sm:min-h-[520px] lg:min-h-[680px]">
-          <div className="absolute inset-0 border border-white/10 bg-black/[0.24]" />
-          <div className="absolute inset-6 border border-white/10" />
+          <div className="absolute inset-0 rounded-lg border border-white/10 bg-white/[0.035] shadow-[0_30px_100px_rgba(0,0,0,0.28)] backdrop-blur" />
+          <div className="absolute inset-6 rounded-lg border border-white/10" />
           <div className="absolute left-5 right-5 top-5 flex items-center justify-between text-[10px] uppercase text-white/[0.42]">
             <span>{siteConfig.role}</span>
             <span>{siteConfig.tagline}</span>

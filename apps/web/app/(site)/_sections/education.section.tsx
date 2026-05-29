@@ -39,11 +39,11 @@ export default function EducationSection() {
     <section
       id={navConfig.sections.education.id}
       ref={rootRef}
-      className="relative overflow-hidden py-24"
+      className="section-frame relative overflow-hidden py-24"
       aria-labelledby="education-title"
     >
       <div className="section-shell">
-        <div className="grid gap-5 rounded-lg border border-white/10 bg-white/[0.035] p-6 md:grid-cols-[0.78fr_1.22fr] md:p-8">
+        <div className="grid gap-5 rounded-lg border border-white/10 bg-white/[0.035] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.16)] md:grid-cols-[0.78fr_1.22fr] md:p-8">
           <div>
             <p className="education-reveal scene-label">education</p>
             <h2

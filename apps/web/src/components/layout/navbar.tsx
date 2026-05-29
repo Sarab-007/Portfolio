@@ -66,7 +66,7 @@ export default function Navbar() {
           data-cursor="home"
         >
           <span className="grid h-8 w-8 place-items-center rounded-md border border-white/[0.12] bg-white/[0.06] text-xs font-bold text-[rgb(var(--accent))]">
-            <img src="/dark-avatar.svg" />
+            <img src="/dark-avatar.svg" alt="" />
           </span>
           <span className="hidden leading-tight sm:block">
             <span className="block text-sm font-semibold text-white">

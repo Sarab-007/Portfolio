@@ -41,7 +41,7 @@ export default function ContactSection() {
     <section
       id={navConfig.sections.contact.id}
       ref={rootRef}
-      className="relative overflow-hidden py-28 md:py-36"
+      className="section-frame relative overflow-hidden py-28 md:py-36"
       aria-labelledby="contact-title"
     >
       <div className="section-shell grid gap-10 lg:grid-cols-[0.92fr_1.08fr]">
@@ -100,7 +100,7 @@ export default function ContactSection() {
           </div>
         </div>
 
-        <div className="contact-reveal rounded-lg border border-white/10 bg-white/[0.035] p-5 md:p-6">
+        <div className="contact-reveal rounded-lg border border-white/10 bg-white/[0.035] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.16)] md:p-6">
           <ContactForm />
         </div>
       </div>

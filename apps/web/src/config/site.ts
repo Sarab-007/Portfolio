@@ -20,14 +20,14 @@ export const siteConfig = {
 
   profile: {
     eyebrow: "Full-stack systems, cinematic interfaces, resilient delivery",
-    headline: "Enterprise software with product precision.",
+    headline: "Cinematic product systems with full-stack precision.",
     promise:
       "I turn complex operational systems into clear, fast and robust web experiences.",
     stats: [
       { value: "7+", label: "years building production software" },
-      { value: "4", label: "enterprise platforms featured" },
+      { value: "6", label: "featured product systems" },
       { value: "1600+", label: "IoT sensors represented in parking systems" },
-      { value: "12", label: "parking lots optimized at JHAH" },
+      { value: "AI", label: "healthcare and marketplace experiences" },
     ],
   },
 

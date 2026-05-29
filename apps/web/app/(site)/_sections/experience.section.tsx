@@ -62,7 +62,7 @@ export default function ExperienceSection() {
     <section
       id={navConfig.sections.experience.id}
       ref={rootRef}
-      className="relative py-28 md:py-36"
+      className="section-frame relative py-28 md:py-36"
       aria-labelledby="experience-title"
     >
       <div className="section-shell grid gap-12 lg:grid-cols-[0.78fr_1.22fr]">
@@ -92,7 +92,7 @@ export default function ExperienceSection() {
                 <div className="absolute left-0 top-0 grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-black text-[rgb(var(--accent))]">
                   <BriefcaseBusiness className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.055]">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <h3 className="text-2xl font-semibold text-white">

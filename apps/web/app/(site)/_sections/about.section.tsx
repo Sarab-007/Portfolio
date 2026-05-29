@@ -78,7 +78,7 @@ export default function AboutSection() {
     <section
       id={navConfig.sections.about.id}
       ref={rootRef}
-      className="relative overflow-hidden py-28 md:py-36"
+      className="section-frame relative overflow-hidden py-28 md:py-36"
       aria-labelledby="about-title"
     >
       <div className="section-shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
@@ -108,7 +108,7 @@ export default function AboutSection() {
             {principles.map(({ icon: Icon, title, text }) => (
               <article
                 key={title}
-                className="about-principle rounded-lg border border-white/10 bg-white/[0.04] p-5"
+                className="about-principle rounded-lg border border-white/10 bg-white/[0.04] p-5 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.065]"
               >
                 <Icon className="h-5 w-5 text-[rgb(var(--accent))]" />
                 <h3 className="mt-5 text-sm font-semibold text-white">

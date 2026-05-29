@@ -22,11 +22,12 @@ export default function MagneticLink({
   className,
   variant = "secondary",
   icon,
-  cursorLabel: _cursorLabel,
+  cursorLabel,
   ...props
 }: MagneticLinkProps) {
   return (
     <a
+      data-cursor={cursorLabel}
       className={cn(
         "group inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold transition-[background-color,border-color,color,transform] duration-200 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[rgb(var(--accent))]",
         variantClass[variant],
